@@ -158,13 +158,14 @@ def main():
         if "APP_NAME" in os.environ:
             # Heroku deployment using webhook
             port = int(os.environ.get("PORT", 8443))
-            heroku_app_name = os.getenv("APP_NAME")
-            webhook_url = f"https://{heroku_app_name}.herokuapp.com/{telegram_bot_token}"
+            app_name = os.getenv("APP_NAME")
+            webhook_path = "/webhook"  # Simplified path
+            webhook_url = f"https://{app_name}.herokuapp.com{webhook_path}"
             logger.info("Setting webhook for Heroku: %s", webhook_url)
             application.run_webhook(
                 listen="0.0.0.0",
                 port=port,
-                url_path=telegram_bot_token,
+                url_path=webhook_path,
                 webhook_url=webhook_url
             )
         else:
@@ -175,6 +176,7 @@ def main():
     except Exception as e:
         logger.error("Bot failed to start: %s", e)
         raise
+    
 
 if __name__ == '__main__':
     main()
